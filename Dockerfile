@@ -1,21 +1,21 @@
 # Linux dev environment for LEDE project
 # Based on borromeotlhs' dockerfile
 
-FROM ubuntu:14.04
+FROM ubuntu:18.04
 
 LABEL maintainer="joseluis.canovas@outlook.com"
 LABEL description="Dockerfile for Onion Omega2 SDK environment. It can be modified for Omega2+."
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
-  subversion g++ zlib1g-dev build-essential git python libncurses5-dev gawk gettext unzip file libssl-dev wget \
+  subversion g++ zlib1g-dev build-essential git python python3 libncurses5-dev gawk gettext unzip file libssl-dev wget \
 && rm -rf /var/lib/apt/lists/*
 
-# Install CMake 3.7.2
+# Install CMake 3.15.3
 RUN mkdir ~/temp &&\
     cd ~/temp &&\
-    wget https://cmake.org/files/v3.7/cmake-3.7.2.tar.gz  &&\
-    tar xzvf cmake-3.7.2.tar.gz &&\
-    cd cmake-3.7.2/ &&\
+    wget https://cmake.org/files/v3.15/cmake-3.15.3.tar.gz &&\
+    tar xzvf cmake-3.15.3.tar.gz &&\
+    cd cmake-3.15.3/ &&\
     ./bootstrap &&\
     make  &&\
     make install &&\
@@ -24,9 +24,10 @@ RUN mkdir ~/temp &&\
 
 RUN git clone https://github.com/lede-project/source.git lede
 
-RUN adduser omega &&  echo 'omega:omega' | chpasswd   && chown -R omega:omega lede
+# RUN adduser omega &&  echo 'omega:omega' | chpasswd   && chown -R omega:omega lede
 WORKDIR lede
-USER omega
+# USER omega
+USER root
 
 RUN ./scripts/feeds update -a  && ./scripts/feeds install -a 
 
